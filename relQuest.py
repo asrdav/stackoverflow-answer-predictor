@@ -31,4 +31,6 @@ class RelevantQuestions:
                 maxSim = res[i]
 
         resQId = [data[idx1]['qId'], data[idx2]['qId']]
+        if(data[idx1]['qId']==data[idx2]['qId']):
+            resQId=[data[idx1]['qId']]
         return resQId
