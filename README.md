@@ -1,3 +1,3 @@
-# stackoverflow.com-answer-and-time-predictor
->Predicting time and answer of Stackoverflow questions.
->Uses ML and NLP.
+# stackoverflow.com-answer-predictor
+>Predicting answer of any question asked on Stackoverflow website.
+>Uses various concepts of ML and NLP.
