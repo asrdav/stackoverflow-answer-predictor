@@ -35,6 +35,7 @@ class TextProperties:
             c = c + 1
         return c
 
+    
     @staticmethod
     def subjective(text):
         sub = TextBlob(text).sentiment.subjectivity
