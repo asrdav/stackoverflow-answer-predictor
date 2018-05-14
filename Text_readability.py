@@ -1,4 +1,6 @@
-import pkg_resources
+#(properties) reading of texts
+
+import pkg_resources #importing necessary libraries
 import string
 import re
 import math
@@ -9,27 +11,7 @@ easy_word_set = set([ln.strip() for ln in pkg_resources.resource_stream('textsta
 
 
 class TextStatistics:
-    @staticmethod
-    def char_count(text, ignore_spaces=True):
-        """
-        Function to return total character counts in a text, pass the following parameter
-        ignore_spaces = False
-        to ignore whitespaces
-        """
-        if ignore_spaces:
-            text = text.replace(" ", "")
-        return len(text)
-
-    @staticmethod
-    def lexicon_count(text, removepunct=True):
-        """
-        Function to return total lexicon (words in lay terms) counts in a text
-        """
-        if removepunct:
-            text = ''.join(ch for ch in text if ch not in exclude)
-        count = len(text.split())
-        return count
-
+    
     @staticmethod
     def syllable_count(text):
         """
@@ -61,6 +43,28 @@ class TextStatistics:
             count = count - (0.1 * count)
             return count
 
+    @staticmethod
+    def char_count(text, ignore_spaces=True):
+        """
+        Function to return total character counts in a text, pass the following parameter
+        ignore_spaces = False
+        to ignore whitespaces
+        """
+        if ignore_spaces:
+            text = text.replace(" ", "")
+        return len(text)
+
+    @staticmethod
+    def lexicon_count(text, removepunct=True):
+        """
+        Function to return total lexicon (words in lay terms) counts in a text
+        """
+        if removepunct:
+            text = ''.join(ch for ch in text if ch not in exclude)
+        count = len(text.split())
+        return count
+
+
     def sentence_count(self, text):
         """
         Sentence count of a text
@@ -76,20 +80,20 @@ class TextStatistics:
         lc = self.lexicon_count(text)
         sc = self.sentence_count(text)
         try:
-            ASL = float(float(lc) / float(sc))
+            ASL = float(lc / sc)
             return round(lc / sc, 1)
         except:
-            #print("Error(ASL): Sentence Count is Zero, Cannot Divide")
+            print("Error(ASL): Sentence Count is Zero, Cannot Divide")
             return 0
 
     def avg_syllables_per_word(self, text):
         syllable = self.syllable_count(text)
         words = self.lexicon_count(text)
         try:
-            ASPW = float(float(syllable) / float(words))
+            ASPW = float(syllable) / float(words)
             return round(ASPW, 1)
         except:
-            #print("Error(ASPW): Number of words are zero, cannot divide")
+            print("Error(ASyPW): Number of words are zero, cannot divide")
             return 0
 
     def avg_letter_per_word(self, text):
@@ -97,7 +101,7 @@ class TextStatistics:
             ALPW = float(float(self.char_count(text)) / float(self.lexicon_count(text)))
             return round(ALPW, 2)
         except:
-            #print("Error(ALPW): Number of words are zero, cannot divide")
+            print("Error(ALPW): Number of words are zero, cannot divide")
             return 0
 
     def avg_sentence_per_word(self, text):
@@ -105,16 +109,16 @@ class TextStatistics:
             ASPW = float(float(self.sentence_count(text)) / float(self.lexicon_count(text)))
             return round(ASPW, 2)
         except:
-            #print("Error(AStPW): Number of words are zero, cannot divide")
+            print("Error(AStPW): Number of words are zero, cannot divide")
             return 0
 
-    def flesch_reading_ease(self, text):
+    def flesch_reading_ease(self, text): #finding Flesh Reading Ease
         ASL = self.avg_sentence_length(text)
         ASW = self.avg_syllables_per_word(text)
         FRE = 206.835 - float(1.015 * ASL) - float(84.6 * ASW)
         return round(FRE, 2)
 
-    def flesch_kincaid_grade(self, text):
+    def flesch_kincaid_grade(self, text): #finding Flesh Kincaid Grade
         ASL = self.avg_sentence_length(text)
         ASW = self.avg_syllables_per_word(text)
         FKRA = float(0.39 * ASL) + float(11.8 * ASW) - 15.59
@@ -128,25 +132,28 @@ class TextStatistics:
                 count += 1
         return count
 
-    def smog_index(self, text):
+    def smog_index(self, text): #finding Smog Index
         if self.sentence_count(text) >= 3:
             try:
                 poly_syllab = self.polysyllabcount(text)
                 SMOG = (1.043 * (30 * (poly_syllab / self.sentence_count(text))) ** .5) + 3.1291
                 return round(SMOG, 1)
             except:
-                #print("Error(SI): Sentence count is zero, cannot divide")
+                print("Error(SI): Sentence count is zero, cannot divide")
                 return 0
         else:
             return 0
 
-    def coleman_liau_index(self, text):
+    def coleman_liau_index(self, text): #calculating Coleman Liau Index
         L = round(self.avg_letter_per_word(text) * 100, 2)
         S = round(self.avg_sentence_per_word(text) * 100, 2)
         CLI = float((0.058 * L) - (0.296 * S) - 15.8)
         return round(CLI, 2)
 
     def automated_readability_index(self, text):
+        '''The automated readability index (ARI) is a readability test for English texts, 
+        designed to gauge the understandability of a text. It produces an approximate representation of 
+        the US grade level needed to comprehend the text.'''
         chrs = self.char_count(text)
         wrds = self.lexicon_count(text)
         snts = self.sentence_count(text)
@@ -156,7 +163,7 @@ class TextStatistics:
             ARI = (4.71 * round(a, 2)) + (0.5 * round(b, 2)) - 21.43
             return round(ARI, 1)
         except Exception as E:
-            #print("Error(ARI) : Sentence count is zero, cannot divide")
+            print("Error(ARI) : Sentence count is zero, cannot divide")
             return 0
 
     def linsear_write_formula(self, text):
@@ -179,7 +186,7 @@ class TextStatistics:
                     else:
                         Number = (Number - 2) / 2
                 except Exception as E:
-                    #print("Error (LWF): ", E)
+                    print("Error (LWF): ", E)
                     pass
         return float(Number)
 
@@ -193,7 +200,7 @@ class TextStatistics:
                         diff_words_set.add(value)
         return len(diff_words_set)
 
-    def dale_chall_readability_score(self, text):
+    def dale_chall_readability_score(self, text): #calculating Dale Chall Readability Score
         word_count = self.lexicon_count(text)
         count = word_count - self.difficult_words(text)
         if word_count > 0:
@@ -208,7 +215,7 @@ class TextStatistics:
             score = (0.1579 * difficult_words) + (0.0496 * self.avg_sentence_length(text))
         return round(score, 2)
 
-    def gunning_fog(self, text):
+    def gunning_fog(self, text): #Gunning Fog index
         try:
             per_diff_words = (self.difficult_words(text) / self.lexicon_count(text) * 100) + 5
             grade = 0.4 * (self.avg_sentence_length(text) + per_diff_words)
@@ -225,7 +232,7 @@ class TextStatistics:
         grade.append(int(lower))
         grade.append(int(upper))
 
-        # Appending Flesch Reading Easy
+        # Appending Flesch Reading Ease
         score = self.flesch_reading_ease(text)
         if 100 > score >= 90:
             grade.append(5)
@@ -287,3 +294,5 @@ class TextStatistics:
         final_grade = str(sorted_x[len(sorted_x) - 1])
         score = final_grade.split(',')[0].strip('(')
         return int(score)
+
+#overall readability is calculated
