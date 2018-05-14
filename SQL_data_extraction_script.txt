@@ -1,0 +1,11 @@
+
+select g.*,Users.Id as userId, Users.Reputation, Users.UpVotes as UserUpvotes, Users.DownVotes as UserDownvotes
+from Users join 
+(select Posts.Id,Posts.AcceptedAnswerId,Posts.ParentId as ParentQqestID,Posts.Score as qScore,Posts.ViewCount as qViewCount,
+Posts.OwnerUserId as qAsker,Posts.Body as qBody,Posts.Title as qTitle, Posts.tags as qTags,  
+Posts.CommentCount as qCommentCount, Posts.CreationDate as qCreationDate, Posts.LastEditDate as qLastEditDate, Posts.DeletionDate as qDeletionDate,
+p.Id as answerId,p.Score as answerScore,p.ViewCount as answerViewCount,
+p.OwnerUserId as answerer,p.Body as answerBody,  
+p.CommentCount as answerCommentCount, p.CreationDate as AnsweringDate, p.LastActivityDate
+from Posts join Posts as p on Posts.Id = p.ParentId where Posts.Id between 150001 and 200000)
+as g on Users.Id = g.answerer order by Id
